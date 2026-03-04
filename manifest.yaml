@@ -1,0 +1,100 @@
+id: echonode
+title: "EchoNode"
+version: 0.1.0.0
+release-notes: "Initial release — CPU-optimised STT, TTS, and Embedding service."
+license: MIT
+wrapper-repo: "https://github.com/placeholder/echonode"
+upstream-repo: "https://github.com/placeholder/echonode"
+support-site: "https://github.com/placeholder/echonode/issues"
+marketing-site: "https://github.com/placeholder/echonode"
+build: ["make"]
+description:
+  short: CPU-optimised STT, TTS, and Embedding API
+  long: |
+    EchoNode provides always-on Speech-to-Text (Whisper-small),
+    Text-to-Speech (Kokoro-82M), and Text-to-Embedding
+    (nomic-embed-text-v2-moe) via an OpenAI-compatible REST API.
+    Link it as a Custom Provider in Bifrost using the internal
+    StartOS address http://echonode.embassy:8000.
+assets:
+  license: LICENSE
+  icon: icon.png
+  instructions: instructions.md
+hardware-requirements:
+  arch:
+    - x86_64
+main:
+  type: docker
+  image: main
+  entrypoint: "docker_entrypoint.sh"
+  args: []
+  user: root
+  mounts:
+    main: /app/data
+  gpu-acceleration: false
+health-checks:
+  api:
+    name: "API"
+    success-message: EchoNode is ready
+    type: script
+config: ~
+properties: ~
+dependencies: {}
+interfaces:
+  main:
+    name: "EchoNode API"
+    description: "OpenAI-compatible audio and embedding REST API"
+    tor-config:
+      port-mapping:
+        80: "8000"
+    lan-config:
+      443:
+        ssl: true
+        internal: 8000
+    ui: false
+    protocols:
+      - tcp
+      - http
+volumes:
+  main:
+    type: data
+images:
+  main:
+    type: dockerfile
+    path: Dockerfile
+backup:
+  create:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - duplicity
+      - create
+      - /mnt/backup
+      - /app/data
+    mounts:
+      BACKUP: "/mnt/backup"
+      main: "/app/data"
+  restore:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - duplicity
+      - restore
+      - /mnt/backup
+      - /app/data
+    mounts:
+      BACKUP: "/mnt/backup"
+      main: "/app/data"
+migrations:
+  from:
+    "*":
+      type: script
+      args: ["from"]
+  to:
+    "*":
+      type: script
+      args: ["to"]

@@ -1,0 +1,13 @@
+# Build outputs
+docker-images/
+*.s9pk
+scripts/embassy.js
+
+# Large model files (present locally at build time, not tracked in git)
+models/
+
+# Python
+__pycache__/
+*.pyc
+.env
+ai-app-env/
