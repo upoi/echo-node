@@ -33,6 +33,9 @@ RUN mkdir -p /models/kokoro && \
 # ─── Stage 3: final runtime image ────────────────────────────────────────────
 FROM python:3.12-slim-bookworm
 
+# Flush Python stdout/stderr immediately so StartOS logs are visible in real time
+ENV PYTHONUNBUFFERED=1
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libopenblas0 ffmpeg \
     && rm -rf /var/lib/apt/lists/*

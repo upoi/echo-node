@@ -26,7 +26,7 @@ hardware-requirements:
 main:
   type: docker
   image: main
-  entrypoint: "docker_entrypoint.sh"
+  entrypoint: "/docker_entrypoint.sh"
   args: []
   user: root
   mounts:
